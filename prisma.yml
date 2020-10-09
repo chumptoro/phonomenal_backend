@@ -1,0 +1,12 @@
+endpoint: https://us1.prisma.sh/mark-pham-beaff5/onlinestore2/dev
+
+
+datamodel: datamodel.graphql
+
+generate:
+  - generator: graphql-schema
+    output: ./src/generated/prisma.graphql
+
+hooks:
+  post-deploy:
+    - graphql get-schema -p prisma
