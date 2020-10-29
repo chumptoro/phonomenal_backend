@@ -168,15 +168,6 @@ const Mutations = {
 		return {message: "Goodbye"};
 	},
 	async requestPasswordReset(parent, args, ctx, info) {
-		//check that this is a real user
-		const user = await ctx.db.query.user({ where: { email: args.email } });
-		if (!user) {
-			throw new Error(`Looks like there isn't an account associated with nthis email!`);
-		}
-		//set a reset token and expiry onthat user
-		//email them the reset token
-	},
-	async requestPasswordReset(parent, args, ctx, info) {
     // 1. Check if this is a real user
     const user = await ctx.db.query.user({ where: { email: args.email } });
     if (!user) {
@@ -203,7 +194,14 @@ const Mutations = {
 
 		// 4. Return the message
 		console.group(res);
-    return { message: 'Thanks!' };
+		return { message: 'Thanks!' };
+				
+		//SAMPLE GraphQL mutation
+		// mutation requestPasswordReset {
+		// 	requestPasswordReset(email: "mark.p.pham@gmail.com") {
+		// 		message
+		// 	}
+		// }
 	},
 	async resetPassword(parent, args, ctx, info) {
     // 1. check if the passwords match
@@ -240,7 +238,16 @@ const Mutations = {
       maxAge: 1000 * 60 * 60 * 24 * 365*2,
     });
     // 8. return the new user
-    return updatedUser;
+		return updatedUser;
+
+		//sample GraphQL mutation
+		// mutation reset {
+		// 	resetPassword(resetToken: "eb26476183e1060bf274be15c76fc8861bcc3b26", password:"r" confirmPassword:"r") {
+		// 		id
+		// 		first_name
+		// 	}
+		// }
+
   },
 	
 };

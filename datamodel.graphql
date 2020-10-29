@@ -15,11 +15,11 @@ enum Permission {
 
 type User {
 	id: ID! @id
-  	first_name: String
-  	last_name: String
-  	email: String @unique
-  	phone_number: String
-  	delivery_address: String
+	first_name: String
+	last_name: String
+	email: String @unique
+	phone_number: String
+	delivery_address: String
 	payment_card_number: String
 	password: String
 	resetToken: String
