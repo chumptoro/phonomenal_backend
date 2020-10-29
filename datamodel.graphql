@@ -1,11 +1,30 @@
+enum Permission {
+	ADMIN
+	USER 
+
+	ORDERITEMCREATE
+	ORDERITEMUPDATE
+	ORDERITEMDELETE
+	 
+	ORDERCREATE
+	ORDERUPDATE
+	ORDERDELETE
+
+	PERMISSIONUPDATE  
+}
+
 type User {
 	id: ID! @id
-  	first_name: String!
-  	last_name: String!
-  	email: String
+  	first_name: String
+  	last_name: String
+  	email: String @unique
   	phone_number: String
   	delivery_address: String
 	payment_card_number: String
+	password: String
+	resetToken: String
+	resetTokenExpiry: Float
+	permissions: [Permission] @scalarList(strategy: RELATION)
 }
 type Category {
 	id: ID! @id
@@ -25,6 +44,7 @@ type Order {
 	payment_status: Boolean
 	
 	patron: User
+	guest_patron_id: String
 	first_name: String
   	last_name: String
   	email: String
@@ -54,8 +74,6 @@ type Dish {
 	low_sugar: Boolean
 
 	order_items:[OrderItem]
-
-
 }
 
 type OrderItem {
@@ -68,6 +86,8 @@ type OrderItem {
 	dish_id: ID
 	order_id: String
 	dish_name: String
+	guest_patron_id: String
+	patron: User
 }
 type Reservation {
 	id: ID! @id
@@ -85,3 +105,13 @@ type Item {
 }
 
 
+	# createOrderItem(dish_id: ID, quantity:  Int, special_instruction: String, price: Float, dish: DishInput): OrderItem!
+	# updateOrderItem(quantity: Int, special_instruction: String, price: Float): OrderItem!
+	# deleteOrderItem(where: OrderItemWhereUniqueInput!): OrderItem
+
+	# orderItems(where: OrderItemWhereInput): [OrderItem]!
+	# users: [User]!
+
+	# createOrderItem(data: OrderItemCreateInput!): OrderItem!
+
+	# 	signup(email: String!, password: String!, first_name: String! last_name: String!): User!

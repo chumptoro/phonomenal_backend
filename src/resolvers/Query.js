@@ -19,6 +19,37 @@ const Query = {
 		return items;
 	},
 	item: forwardTo('db'),
+
+	async orderItems(parent, args, ctx, info) {
+		const orderItems = await ctx.db.query.orderItems();
+		return orderItems;
+	},
+	orderItems: forwardTo('db'),
+
+	async categories(parent, args, ctx, info) {
+		const categories = await ctx.db.query.categories();
+		return categories;
+	},
+	orderItems: forwardTo('db'),
+
+	async dishes(parent, args, ctx, info) {
+		const dishes = await ctx.db.query.dishes();
+		return dishes;
+	},
+	dishes: forwardTo('db'),
+
+  me(parent, args, ctx, info) {
+    // check if there is a current user ID
+    if (!ctx.request.userId) {
+      return null;
+    }
+    return ctx.db.query.user(
+      {
+        where: { id: ctx.request.userId },
+      },
+      info
+    );
+  },
 };
 
 //we can use this when we want common tasks done like getting all items from the database:

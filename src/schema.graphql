@@ -1,35 +1,45 @@
 # import * from './generated/prisma.graphql' 
-
 type Mutation {
 	createItem(title: String, description: String, price: Int,
-		image: String, largeImage: String): Item!
+	image: String, largeImage: String): Item!
+
 	updateItem(id: ID!, title: String, description: String, price: Int): Item!
-	createOrderItem(dish_id: ID, quantity:  Int, special_instruction: String, price: Float, dish: Dish): OrderItem!
+	
+	addOrderItemFromMenu(dish_id: ID, quantity:  Int, special_instruction: String, price: Float, dish_name: String, dish: DishWhereUniqueInput): OrderItem!
+
+  reviseOrderItem(id: ID, quantity: Int, special_instruction: String, price: Float): OrderItem
+
+ 	removeOrderItem(id: ID): OrderItem
+
+	deleteManyOrderItems(where: OrderItemWhereInput): BatchPayload!
+	
+	signup(first_name: String, email: String, password: String, phone_number: String): User
+
+	signin(email: String, password: String): User
+
+	signout: SuccessMessage
 }
 
+type SuccessMessage {
+	message: String
+}
 
 type Query {
 	items: [Item]!
-	item(where: ItemUpdateInput!): Item
+	item(where: ItemUpdateInput): Item!
+
+	orderItems(where: OrderItemWhereInput, orderBy: OrderItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [OrderItem]!
+
+	categories(where: CategoryWhereInput, orderBy: CategoryOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Category]!
+
+	dishes(where: DishWhereInput, orderBy: DishOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Dish]!
+
+	users(where: UserWhereInput, orderBy: UserOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [User]!
+
+	me: User
 }
 
-# input Order {
-#   name: Sort
-#   order: Sort
-# }
-# enum Sort {
-#   asc
-# }
-# type Query {
-#   categories(filter: Int, skip: String, take: Int, orderBy: Order): [Category!]!
-# }
 
-# query {
-# 	 categories(orderBy: { order: asc} {
-# 		name
-#     order
-#   }
-# }
 
 
 

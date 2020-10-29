@@ -1,5 +1,5 @@
 # source: https://us1.prisma.sh/mark-pham-beaff5/onlinestore2/dev
-# timestamp: Thu Oct 08 2020 16:41:30 GMT-0700 (Pacific Daylight Time)
+# timestamp: Mon Oct 26 2020 01:30:50 GMT-0400 (Eastern Daylight Time)
 
 type AggregateCategory {
   count: Int!
@@ -1365,6 +1365,7 @@ type Order implements Node {
   progress_status: String
   payment_status: Boolean
   patron: User
+  guest_patron_id: String
   first_name: String
   last_name: String
   email: String
@@ -1391,6 +1392,7 @@ input OrderCreateInput {
   total_price: Float
   progress_status: String
   payment_status: Boolean
+  guest_patron_id: String
   first_name: String
   last_name: String
   email: String
@@ -1414,6 +1416,7 @@ input OrderCreateWithoutOrder_itemsInput {
   total_price: Float
   progress_status: String
   payment_status: Boolean
+  guest_patron_id: String
   first_name: String
   last_name: String
   email: String
@@ -1441,6 +1444,9 @@ type OrderItem implements Node {
   order: Order
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
+  patron: User
 }
 
 """A connection to a list of items."""
@@ -1460,8 +1466,11 @@ input OrderItemCreateInput {
   price: Float
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
   dish: DishCreateOneWithoutOrder_itemsInput
   order: OrderCreateOneWithoutOrder_itemsInput
+  patron: UserCreateOneInput
 }
 
 input OrderItemCreateManyWithoutDishInput {
@@ -1481,7 +1490,10 @@ input OrderItemCreateWithoutDishInput {
   price: Float
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
   order: OrderCreateOneWithoutOrder_itemsInput
+  patron: UserCreateOneInput
 }
 
 input OrderItemCreateWithoutOrderInput {
@@ -1491,7 +1503,10 @@ input OrderItemCreateWithoutOrderInput {
   price: Float
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
   dish: DishCreateOneWithoutOrder_itemsInput
+  patron: UserCreateOneInput
 }
 
 """An edge in a connection."""
@@ -1516,6 +1531,10 @@ enum OrderItemOrderByInput {
   dish_id_DESC
   order_id_ASC
   order_id_DESC
+  dish_name_ASC
+  dish_name_DESC
+  guest_patron_id_ASC
+  guest_patron_id_DESC
 }
 
 type OrderItemPreviousValues {
@@ -1525,6 +1544,8 @@ type OrderItemPreviousValues {
   price: Float
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
 }
 
 input OrderItemScalarWhereInput {
@@ -1740,6 +1761,86 @@ input OrderItemScalarWhereInput {
 
   """All values not ending with the given string."""
   order_id_not_ends_with: String
+  dish_name: String
+
+  """All values that are not equal to given value."""
+  dish_name_not: String
+
+  """All values that are contained in given list."""
+  dish_name_in: [String!]
+
+  """All values that are not contained in given list."""
+  dish_name_not_in: [String!]
+
+  """All values less than the given value."""
+  dish_name_lt: String
+
+  """All values less than or equal the given value."""
+  dish_name_lte: String
+
+  """All values greater than the given value."""
+  dish_name_gt: String
+
+  """All values greater than or equal the given value."""
+  dish_name_gte: String
+
+  """All values containing the given string."""
+  dish_name_contains: String
+
+  """All values not containing the given string."""
+  dish_name_not_contains: String
+
+  """All values starting with the given string."""
+  dish_name_starts_with: String
+
+  """All values not starting with the given string."""
+  dish_name_not_starts_with: String
+
+  """All values ending with the given string."""
+  dish_name_ends_with: String
+
+  """All values not ending with the given string."""
+  dish_name_not_ends_with: String
+  guest_patron_id: String
+
+  """All values that are not equal to given value."""
+  guest_patron_id_not: String
+
+  """All values that are contained in given list."""
+  guest_patron_id_in: [String!]
+
+  """All values that are not contained in given list."""
+  guest_patron_id_not_in: [String!]
+
+  """All values less than the given value."""
+  guest_patron_id_lt: String
+
+  """All values less than or equal the given value."""
+  guest_patron_id_lte: String
+
+  """All values greater than the given value."""
+  guest_patron_id_gt: String
+
+  """All values greater than or equal the given value."""
+  guest_patron_id_gte: String
+
+  """All values containing the given string."""
+  guest_patron_id_contains: String
+
+  """All values not containing the given string."""
+  guest_patron_id_not_contains: String
+
+  """All values starting with the given string."""
+  guest_patron_id_starts_with: String
+
+  """All values not starting with the given string."""
+  guest_patron_id_not_starts_with: String
+
+  """All values ending with the given string."""
+  guest_patron_id_ends_with: String
+
+  """All values not ending with the given string."""
+  guest_patron_id_not_ends_with: String
 }
 
 type OrderItemSubscriptionPayload {
@@ -1787,8 +1888,11 @@ input OrderItemUpdateInput {
   price: Float
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
   dish: DishUpdateOneWithoutOrder_itemsInput
   order: OrderUpdateOneWithoutOrder_itemsInput
+  patron: UserUpdateOneInput
 }
 
 input OrderItemUpdateManyDataInput {
@@ -1797,6 +1901,8 @@ input OrderItemUpdateManyDataInput {
   price: Float
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
 }
 
 input OrderItemUpdateManyMutationInput {
@@ -1805,6 +1911,8 @@ input OrderItemUpdateManyMutationInput {
   price: Float
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
 }
 
 input OrderItemUpdateManyWithoutDishInput {
@@ -1842,7 +1950,10 @@ input OrderItemUpdateWithoutDishDataInput {
   price: Float
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
   order: OrderUpdateOneWithoutOrder_itemsInput
+  patron: UserUpdateOneInput
 }
 
 input OrderItemUpdateWithoutOrderDataInput {
@@ -1851,7 +1962,10 @@ input OrderItemUpdateWithoutOrderDataInput {
   price: Float
   dish_id: ID
   order_id: String
+  dish_name: String
+  guest_patron_id: String
   dish: DishUpdateOneWithoutOrder_itemsInput
+  patron: UserUpdateOneInput
 }
 
 input OrderItemUpdateWithWhereUniqueWithoutDishInput {
@@ -2089,8 +2203,89 @@ input OrderItemWhereInput {
 
   """All values not ending with the given string."""
   order_id_not_ends_with: String
+  dish_name: String
+
+  """All values that are not equal to given value."""
+  dish_name_not: String
+
+  """All values that are contained in given list."""
+  dish_name_in: [String!]
+
+  """All values that are not contained in given list."""
+  dish_name_not_in: [String!]
+
+  """All values less than the given value."""
+  dish_name_lt: String
+
+  """All values less than or equal the given value."""
+  dish_name_lte: String
+
+  """All values greater than the given value."""
+  dish_name_gt: String
+
+  """All values greater than or equal the given value."""
+  dish_name_gte: String
+
+  """All values containing the given string."""
+  dish_name_contains: String
+
+  """All values not containing the given string."""
+  dish_name_not_contains: String
+
+  """All values starting with the given string."""
+  dish_name_starts_with: String
+
+  """All values not starting with the given string."""
+  dish_name_not_starts_with: String
+
+  """All values ending with the given string."""
+  dish_name_ends_with: String
+
+  """All values not ending with the given string."""
+  dish_name_not_ends_with: String
+  guest_patron_id: String
+
+  """All values that are not equal to given value."""
+  guest_patron_id_not: String
+
+  """All values that are contained in given list."""
+  guest_patron_id_in: [String!]
+
+  """All values that are not contained in given list."""
+  guest_patron_id_not_in: [String!]
+
+  """All values less than the given value."""
+  guest_patron_id_lt: String
+
+  """All values less than or equal the given value."""
+  guest_patron_id_lte: String
+
+  """All values greater than the given value."""
+  guest_patron_id_gt: String
+
+  """All values greater than or equal the given value."""
+  guest_patron_id_gte: String
+
+  """All values containing the given string."""
+  guest_patron_id_contains: String
+
+  """All values not containing the given string."""
+  guest_patron_id_not_contains: String
+
+  """All values starting with the given string."""
+  guest_patron_id_starts_with: String
+
+  """All values not starting with the given string."""
+  guest_patron_id_not_starts_with: String
+
+  """All values ending with the given string."""
+  guest_patron_id_ends_with: String
+
+  """All values not ending with the given string."""
+  guest_patron_id_not_ends_with: String
   dish: DishWhereInput
   order: OrderWhereInput
+  patron: UserWhereInput
 }
 
 input OrderItemWhereUniqueInput {
@@ -2112,6 +2307,8 @@ enum OrderOrderByInput {
   progress_status_DESC
   payment_status_ASC
   payment_status_DESC
+  guest_patron_id_ASC
+  guest_patron_id_DESC
   first_name_ASC
   first_name_DESC
   last_name_ASC
@@ -2134,6 +2331,7 @@ type OrderPreviousValues {
   total_price: Float
   progress_status: String
   payment_status: Boolean
+  guest_patron_id: String
   first_name: String
   last_name: String
   email: String
@@ -2188,6 +2386,7 @@ input OrderUpdateInput {
   total_price: Float
   progress_status: String
   payment_status: Boolean
+  guest_patron_id: String
   first_name: String
   last_name: String
   email: String
@@ -2205,6 +2404,7 @@ input OrderUpdateManyMutationInput {
   total_price: Float
   progress_status: String
   payment_status: Boolean
+  guest_patron_id: String
   first_name: String
   last_name: String
   email: String
@@ -2229,6 +2429,7 @@ input OrderUpdateWithoutOrder_itemsDataInput {
   total_price: Float
   progress_status: String
   payment_status: Boolean
+  guest_patron_id: String
   first_name: String
   last_name: String
   email: String
@@ -2478,6 +2679,46 @@ input OrderWhereInput {
 
   """All values that are not equal to given value."""
   payment_status_not: Boolean
+  guest_patron_id: String
+
+  """All values that are not equal to given value."""
+  guest_patron_id_not: String
+
+  """All values that are contained in given list."""
+  guest_patron_id_in: [String!]
+
+  """All values that are not contained in given list."""
+  guest_patron_id_not_in: [String!]
+
+  """All values less than the given value."""
+  guest_patron_id_lt: String
+
+  """All values less than or equal the given value."""
+  guest_patron_id_lte: String
+
+  """All values greater than the given value."""
+  guest_patron_id_gt: String
+
+  """All values greater than or equal the given value."""
+  guest_patron_id_gte: String
+
+  """All values containing the given string."""
+  guest_patron_id_contains: String
+
+  """All values not containing the given string."""
+  guest_patron_id_not_contains: String
+
+  """All values starting with the given string."""
+  guest_patron_id_starts_with: String
+
+  """All values not starting with the given string."""
+  guest_patron_id_not_starts_with: String
+
+  """All values ending with the given string."""
+  guest_patron_id_ends_with: String
+
+  """All values not ending with the given string."""
+  guest_patron_id_not_ends_with: String
   first_name: String
 
   """All values that are not equal to given value."""
@@ -2743,6 +2984,18 @@ type PageInfo {
   endCursor: String
 }
 
+enum Permission {
+  ADMIN
+  USER
+  ORDERITEMCREATE
+  ORDERITEMUPDATE
+  ORDERITEMDELETE
+  ORDERCREATE
+  ORDERUPDATE
+  ORDERDELETE
+  PERMISSIONUPDATE
+}
+
 type Query {
   orders(where: OrderWhereInput, orderBy: OrderOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Order]!
   dishes(where: DishWhereInput, orderBy: DishOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Dish]!
@@ -3001,12 +3254,16 @@ type Subscription {
 
 type User implements Node {
   id: ID!
-  first_name: String!
-  last_name: String!
+  first_name: String
+  last_name: String
   email: String
   phone_number: String
   delivery_address: String
   payment_card_number: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: [Permission!]!
 }
 
 """A connection to a list of items."""
@@ -3021,17 +3278,25 @@ type UserConnection {
 
 input UserCreateInput {
   id: ID
-  first_name: String!
-  last_name: String!
+  first_name: String
+  last_name: String
   email: String
   phone_number: String
   delivery_address: String
   payment_card_number: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserCreatepermissionsInput
 }
 
 input UserCreateOneInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
+}
+
+input UserCreatepermissionsInput {
+  set: [Permission!]
 }
 
 """An edge in a connection."""
@@ -3058,16 +3323,26 @@ enum UserOrderByInput {
   delivery_address_DESC
   payment_card_number_ASC
   payment_card_number_DESC
+  password_ASC
+  password_DESC
+  resetToken_ASC
+  resetToken_DESC
+  resetTokenExpiry_ASC
+  resetTokenExpiry_DESC
 }
 
 type UserPreviousValues {
   id: ID!
-  first_name: String!
-  last_name: String!
+  first_name: String
+  last_name: String
   email: String
   phone_number: String
   delivery_address: String
   payment_card_number: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: [Permission!]!
 }
 
 type UserSubscriptionPayload {
@@ -3116,6 +3391,10 @@ input UserUpdateDataInput {
   phone_number: String
   delivery_address: String
   payment_card_number: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserUpdatepermissionsInput
 }
 
 input UserUpdateInput {
@@ -3125,6 +3404,10 @@ input UserUpdateInput {
   phone_number: String
   delivery_address: String
   payment_card_number: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserUpdatepermissionsInput
 }
 
 input UserUpdateManyMutationInput {
@@ -3134,6 +3417,10 @@ input UserUpdateManyMutationInput {
   phone_number: String
   delivery_address: String
   payment_card_number: String
+  password: String
+  resetToken: String
+  resetTokenExpiry: Float
+  permissions: UserUpdatepermissionsInput
 }
 
 input UserUpdateOneInput {
@@ -3143,6 +3430,10 @@ input UserUpdateOneInput {
   delete: Boolean
   update: UserUpdateDataInput
   upsert: UserUpsertNestedInput
+}
+
+input UserUpdatepermissionsInput {
+  set: [Permission!]
 }
 
 input UserUpsertNestedInput {
@@ -3439,8 +3730,111 @@ input UserWhereInput {
 
   """All values not ending with the given string."""
   payment_card_number_not_ends_with: String
+  password: String
+
+  """All values that are not equal to given value."""
+  password_not: String
+
+  """All values that are contained in given list."""
+  password_in: [String!]
+
+  """All values that are not contained in given list."""
+  password_not_in: [String!]
+
+  """All values less than the given value."""
+  password_lt: String
+
+  """All values less than or equal the given value."""
+  password_lte: String
+
+  """All values greater than the given value."""
+  password_gt: String
+
+  """All values greater than or equal the given value."""
+  password_gte: String
+
+  """All values containing the given string."""
+  password_contains: String
+
+  """All values not containing the given string."""
+  password_not_contains: String
+
+  """All values starting with the given string."""
+  password_starts_with: String
+
+  """All values not starting with the given string."""
+  password_not_starts_with: String
+
+  """All values ending with the given string."""
+  password_ends_with: String
+
+  """All values not ending with the given string."""
+  password_not_ends_with: String
+  resetToken: String
+
+  """All values that are not equal to given value."""
+  resetToken_not: String
+
+  """All values that are contained in given list."""
+  resetToken_in: [String!]
+
+  """All values that are not contained in given list."""
+  resetToken_not_in: [String!]
+
+  """All values less than the given value."""
+  resetToken_lt: String
+
+  """All values less than or equal the given value."""
+  resetToken_lte: String
+
+  """All values greater than the given value."""
+  resetToken_gt: String
+
+  """All values greater than or equal the given value."""
+  resetToken_gte: String
+
+  """All values containing the given string."""
+  resetToken_contains: String
+
+  """All values not containing the given string."""
+  resetToken_not_contains: String
+
+  """All values starting with the given string."""
+  resetToken_starts_with: String
+
+  """All values not starting with the given string."""
+  resetToken_not_starts_with: String
+
+  """All values ending with the given string."""
+  resetToken_ends_with: String
+
+  """All values not ending with the given string."""
+  resetToken_not_ends_with: String
+  resetTokenExpiry: Float
+
+  """All values that are not equal to given value."""
+  resetTokenExpiry_not: Float
+
+  """All values that are contained in given list."""
+  resetTokenExpiry_in: [Float!]
+
+  """All values that are not contained in given list."""
+  resetTokenExpiry_not_in: [Float!]
+
+  """All values less than the given value."""
+  resetTokenExpiry_lt: Float
+
+  """All values less than or equal the given value."""
+  resetTokenExpiry_lte: Float
+
+  """All values greater than the given value."""
+  resetTokenExpiry_gt: Float
+
+  """All values greater than or equal the given value."""
+  resetTokenExpiry_gte: Float
 }
 
 input UserWhereUniqueInput {
   id: ID
+  email: String
 }
