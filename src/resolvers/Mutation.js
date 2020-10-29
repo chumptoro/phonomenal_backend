@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 //nodejs generate random token
 const { randomBytes } = require('crypto');
 const { promisify } = require('util');
-// const { transport, makeANiceEmail } = require('../mail');
+const { transport, makeANiceEmail } = require('../mail');
 const { hasPermission } = require('../utils');
 const stripe = require('../stripe');
 
@@ -181,16 +181,16 @@ const Mutations = {
       where: { email: args.email },
       data: { resetToken, resetTokenExpiry },
     });
-    // 3. Email them that reset token
-    // const mailRes = await transport.sendMail({
-    //   from: 'wes@wesbos.com',
-    //   to: user.email,
-    //   subject: 'Your Password Reset Token',
-    //   html: makeANiceEmail(`Your Password Reset Token is here!
-    //   \n\n
-    //   <a href="${process.env
-    //     .FRONTEND_URL}/reset?resetToken=${resetToken}">Click Here to Reset</a>`),
-    // });
+    //3. Email them that reset token
+    const mailRes = await transport.sendMail({
+      from: 'mark.pham.developer@gmail.com',
+      to: user.email,
+      subject: 'Your Password Reset Token',
+      html: makeANiceEmail(`Your Password Reset Token is here!
+      \n\n
+      <a href="${process.env
+        .FRONTEND_URL}/password_reset?resetToken=${resetToken}">Click Here to Reset</a>`),
+    });
 
 		// 4. Return the message
 		console.group(res);
@@ -206,7 +206,7 @@ const Mutations = {
 	async resetPassword(parent, args, ctx, info) {
     // 1. check if the passwords match
     if (args.password !== args.confirmPassword) {
-      throw new Error("Yo Passwords don't match!");
+      throw new Error("Please make sure your passwords match!");
     }
     // 2. check if its a legit reset token
     // 3. Check if its expired
