@@ -1,4 +1,9 @@
 # import * from './generated/prisma.graphql' 
+
+type SuccessMessage {
+	message: String
+}
+
 type Mutation {
 	createItem(title: String, description: String, price: Int,
 	image: String, largeImage: String): Item!
@@ -18,10 +23,23 @@ type Mutation {
 	signin(email: String, password: String): User
 
 	signout: SuccessMessage
+
+	requestPasswordReset(email: String): SuccessMessage
+
+	resetPassword(resetToken: String!, password: String!, confirmPassword: String!): User!
 }
 
-type SuccessMessage {
-	message: String
+
+
+# why? this User type is exposed to the  front end.  we do not want the front end to have access to things like password and resetToken, so are giving it a User type to graphql yoga server
+
+type User{
+  id: ID!
+  first_name: String
+  email: String
+	phone_number: String
+	delivery_address: String
+  permissions: [Permission]
 }
 
 type Query {

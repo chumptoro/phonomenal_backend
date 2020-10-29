@@ -16,6 +16,7 @@ server.express.use(cookieParser());
 // decode the JWT so we can get the user Id on each request
 server.express.use((req, res, next) => {
   const { token } = req.cookies;
+  /* if there is an existing token, then there is a logged in user */
   if (token) {
     const { userId } = jwt.verify(token, process.env.APP_SECRET);
     // put the userId onto the req for future requests to access
