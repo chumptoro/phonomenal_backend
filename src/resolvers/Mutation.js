@@ -52,19 +52,28 @@ const Mutations = {
 
 	async addOrderItemFromMenu(parent, {dish_id, quantity, special_instruction, price, dish_name}, ctx, info) {
 		//using Prisma CRUDS and add our own custom logic
-		// db here refers to the Prisma db :
+		// db here refers to the Prisma db
 
 		//check if user is logged in
+		const { userId } = ctx.request;
+		if (!userId) {
+      throw new Error('You must be signed in!');
+    }
+
 		const orderitem = await ctx.db.mutation.createOrderItem({
 			data: {
 				quantity,
 				special_instruction,
 				price,
+				patron: {
+					connect: { id: userId },
+				},
 				dish_id,
 				dish: {
 					connect: { id: dish_id}
 				},
-				dish_name
+				dish_name,
+
 			}
  		}, info);
  		return orderitem;
@@ -87,10 +96,10 @@ const Mutations = {
 		);
 	},
 
-	async removeOrderItem(parent, {id}, ctx, info) {
+	async removeOrderItem(parent, args, ctx, info) {
 		const orderitem = await ctx.db.mutation.deleteOrderItem(
 			{
-				where: { id }
+				where: { id: args.id }
 			},
 				info
 		);
@@ -196,7 +205,7 @@ const Mutations = {
 		console.group(res);
 		return { message: 'Thanks!' };
 				
-		//SAMPLE GraphQL mutation
+		//SAMPLE GraphQL mutation  
 		// mutation requestPasswordReset {
 		// 	requestPasswordReset(email: "mark.p.pham@gmail.com") {
 		// 		message
@@ -248,7 +257,73 @@ const Mutations = {
 		// 	}
 		// }
 
-  },
+	},
+	
+	async createOrder(parent, args, ctx, info) {
+		// 1. Query the current user and make sure they are signed in
+		const { userId } = ctx.request;
+		if (!userId) throw new Error('You must be signed in to complete this order');
+		const user = await ctx.db.query.user(
+      { where: { id: userId } },
+      `{
+      id
+      first_name
+      email
+      shopping_bag {
+        id
+        quantity
+        dish { name price id description image largeImage }
+      }}`
+		);
+		// 2. recalculate the total for the price
+		const amount = user.shopping_bag.reduce(
+			(tally,orderItem) => tally + orderItem.dish.price * orderItem.quantity*100,
+			0
+		);
+		//console.log("THE AMOUNT IS " + amount);
+		// 3. Create the stripe charge (turn token into $$$)
+		const charge = await stripe.charges.create({
+			amount,
+			currency: 'USD',
+			source: args.token,
+		});
+		// 4. Convert the OrderItems to CheckedOutOrderItems
+		const checkedOutOrderItems = user.shopping_bag.map(orderItem => {
+			const checkedOutOrderItem = {
+				quantity: orderItem.quantity,
+				special_instruction: orderItem.quantity,
+				price: orderItem.dish.price,
+
+				dish_name: orderItem.dish.name,
+				description: orderItem.dish.description,
+				image: orderItem.dish.image,
+				largeImage: orderItem.dish.largeImage,
+
+				patron: { connect: { id: userId } },
+			};
+			delete checkedOutOrderItem.id;
+			console.log(checkedOutOrderItem);
+			return checkedOutOrderItem;
+		});
+		// 5. create the Order
+		const order = await ctx.db.mutation.createOrder({
+			data: {
+				total_price: charge.amount,
+				charge: charge.id,
+				checked_out_order_items: { create: checkedOutOrderItems },
+				patron: { connect: { id: userId } },
+			},
+		});
+		// 6. Clean up - clear the users cart, delete orderItems
+		const orderItemIds = user.shopping_bag.map(orderItem => orderItem.id);
+		await ctx.db.mutation.deleteManyOrderItems({
+			where: {
+				id_in: orderItemIds,
+			},
+		});
+		// 7. Return the Order to the client
+		return order;
+	},
 	
 };
 

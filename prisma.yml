@@ -1,4 +1,7 @@
-endpoint: https://us1.prisma.sh/mark-pham-beaff5/onlinestore2/dev
+# endpoint: https://us1.prisma.sh/mark-pham-beaff5/onlinestore2/dev
+#endpoint: ${env:PRISMA_ENDPOINT}
+endpoint: https://online-store-00a079b87e.herokuapp.com/phonomenal-prod/prod
+secret: ${env:PRISMA_SECRET}
 
 
 datamodel: datamodel.graphql

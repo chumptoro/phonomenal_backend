@@ -25,6 +25,7 @@ type User {
 	resetToken: String
 	resetTokenExpiry: Float
 	permissions: [Permission] @scalarList(strategy: RELATION)
+	shopping_bag: [OrderItem]
 }
 type Category {
 	id: ID! @id
@@ -36,21 +37,25 @@ type Category {
 type Order {
 	id: ID! @id
 	time_created_unix_epoch: String
+	checked_out_order_items: [CheckedOutOrderItem]
+
 	time_for_delivery_pickup_unix_epoch: String
-	order_items: [OrderItem]
 	delivery_method: String
+	delivery_instruction: String
+	delivery_address: String
+
 	total_price: Float
+	charge: String
 	progress_status: String
 	payment_status: Boolean
 	
 	patron: User
 	guest_patron_id: String
-	first_name: String
-  	last_name: String
-  	email: String
-  	phone_number: String
-  	delivery_address: String
-	payment_card_number: String
+	guest_first_name: String
+  guest_last_name: String
+  guest_email: String
+  guest_phone_number: String
+	
 }
 
 type Dish {
@@ -89,6 +94,34 @@ type OrderItem {
 	guest_patron_id: String
 	patron: User
 }
+
+#we need this because what if we delete/edit the price of a Dish from
+#the menu in the future?
+#CheckedOutOrderItemm contains info about the deleted/edited Dish without
+#being connected to said deleted/edited dish
+type CheckedOutOrderItem {
+	id: ID! @id
+	quantity: Int
+	special_instruction: String
+	price: Float
+	dish_name: String
+	guest_patron_id: String
+	patron: User
+
+	description: String
+	nutritional_value: String
+	image: String
+	largeImage: String
+	spicy: Boolean
+	glutten_free: Boolean
+	organic: Boolean
+	vegetarian: Boolean
+	ketogenic: Boolean
+	low_fat: Boolean
+	low_sugar: Boolean
+}
+
+
 type Reservation {
 	id: ID! @id
 	time_unix_epoch: String
